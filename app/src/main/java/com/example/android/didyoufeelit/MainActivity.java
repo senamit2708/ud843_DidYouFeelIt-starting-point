@@ -98,6 +98,11 @@ public class MainActivity extends AppCompatActivity {
 //
 //            }
 
+            //here we r putting the condition...so that if we dont have any input string then ..the app will not crash
+            if (urls.length <1 || urls[0]== null){
+
+                return null;
+            }
 
 
             // here we have some steps which r skipped because of presence of only one string
@@ -112,6 +117,11 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Event result) {
 //            super.onPostExecute(event);
+
+            //i have one doubt here ...if return type is void ..we can use only return
+            if (result==null){
+                return;
+            }
             //-- here we  r filling the layout with the result...
             //we have put all the view of layout in updateUi ..so that we call it through method and update the screen
             updateUi(result);
