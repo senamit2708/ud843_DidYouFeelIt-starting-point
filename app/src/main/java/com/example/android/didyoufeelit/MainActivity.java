@@ -15,9 +15,14 @@
  */
 package com.example.android.didyoufeelit;
 
+
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
+
+import java.net.URL;
 
 /**
  * Displays the perceived strength of a single earthquake event based on responses from people who
@@ -33,12 +38,23 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+//
+//        // Perform the HTTP request for earthquake data and process the response.
+//        Event earthquake = Utils.fetchEarthquakeData(USGS_REQUEST_URL);
+//
+//        // Update the information displayed to the user.
+//        updateUi(earthquake);
 
-        // Perform the HTTP request for earthquake data and process the response.
-        Event earthquake = Utils.fetchEarthquakeData(USGS_REQUEST_URL);
+        //-- here we r creating an object of inner class which has extended the Asynch class
+        //-- calling the execute method and providing the string for the first parameter of asynch class to be implemented in the doin background method
+        EarthquakeAsynchTask earthquakeAsynchTask = new EarthquakeAsynchTask();
 
-        // Update the information displayed to the user.
-        updateUi(earthquake);
+      /**  <p>This method is typically used with {@link #THREAD_POOL_EXECUTOR} to
+                * allow multiple tasks to run in parallel on a pool of threads managed by
+                * AsyncTask, however you can also use your own {@link Executor} for custom
+                * behavior. **/
+
+        earthquakeAsynchTask.execute(USGS_REQUEST_URL);
     }
 
     /**
@@ -54,4 +70,57 @@ public class MainActivity extends AppCompatActivity {
         TextView magnitudeTextView = (TextView) findViewById(R.id.perceived_magnitude);
         magnitudeTextView.setText(earthquake.perceivedStrength);
     }
+
+
+    //here we r creating inner class
+    //this class extends the AsyncTask class...
+    //we implement method of this abstract class..to make EarthquakeAsynchTask to concrete class
+    //3 classes r taken here as parameters
+    //first one string here, ..if many links r there i think it will be URL...
+    // Second one is progress....here we have not implemented this method ..so taken parameter as Void...else it will be integer might be
+    // Third one is input param for the onPostExecute method...so..here we r showing the result on the screen of Event class varaibles
+    //so we have taken Event as input
+
+    private class EarthquakeAsynchTask extends AsyncTask<String,Void, Event>{
+
+
+        @Override
+        protected Event doInBackground(String... urls) {
+
+            //-- below lines i started writing by thinking many urls r there...but in this project we r using only one String
+
+//            int count = urls.length;
+//            long totalSize= 0;
+//
+//            for (int i=0; i<count; i++){
+//
+//                totalSize +=
+//
+//            }
+
+
+
+            // here we have some steps which r skipped because of presence of only one string
+            //creating instance of Event class and then entering the result of fetchEarthquakeData into it..
+            Event result = Utils.fetchEarthquakeData(urls[0]);
+            return  result;
+
+
+
+        }
+
+        @Override
+        protected void onPostExecute(Event result) {
+//            super.onPostExecute(event);
+            //-- here we  r filling the layout with the result...
+            //we have put all the view of layout in updateUi ..so that we call it through method and update the screen
+            updateUi(result);
+
+
+        }
+    }
+
+
+
+
 }
